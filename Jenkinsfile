@@ -12,7 +12,7 @@ node('maven-appdev') {
 
   // Checkout Source Code
   stage('Checkout Source') {
-    git credentialsId: 'a79aa448-2f04-4a85-b752-64a1721d3faa', url: 'http://gitea.shared-cicd.svc.cluster.local:3000/CICDLabs/openshift-tasks-private.git'
+    git credentialsId: 'shared-cicd-gitea-secret', url: 'http://gitea.shared-cicd.svc.cluster.local:3000/CICDLabs/openshift-tasks-private.git'
   }
 
   // The following variables need to be defined at the top level
