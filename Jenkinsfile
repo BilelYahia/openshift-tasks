@@ -73,7 +73,7 @@ node('maven-appdev') {
     echo "Deploying container image to Development Project"
     
     // Update the Image on the Development Deployment Config
-    sh "oc set image dc/tasks tasks=docker-registry.default.svc:5000/xyz-tasks-dev/tasks:${devTag} -n tasks-dev"
+    sh "oc set image dc/tasks tasks=docker-registry.default.svc:5000/tasks-dev/tasks:${devTag} -n tasks-dev"
 
     // Update the Config Map which contains the users for the Tasks application
     sh "oc delete configmap tasks-config -n tasks-dev --ignore-not-found=true"
