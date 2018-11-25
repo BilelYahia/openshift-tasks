@@ -44,7 +44,7 @@ node('maven-appdev') {
   // Using Maven call SonarQube for Code Analysis
   stage('Code Analysis') {
     echo "Running Code Analysis"
-    sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-shared-cicd.apps.81d7.example.opentlc.com/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
+    // sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-shared-cicd.apps.afca.example.opentlc.com/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
   }
 
   // Publish the built war file to Nexus
@@ -151,7 +151,6 @@ node('maven-appdev') {
 }
 
 // Convenience Functions to read variables from the pom.xml
-// Do not change anything below this line.
 // --------------------------------------------------------
 def getVersionFromPom(pom) {
   def matcher = readFile(pom) =~ '<version>(.+)</version>'
