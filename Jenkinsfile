@@ -12,7 +12,7 @@ node('maven-appdev') {
 
   // Checkout Source Code
   stage('Checkout Source') {
-    git credentialsId: 'shared-cicd-gitea-secret', url: 'http://gitea.shared-cicd.svc.cluster.local:3000/CICDLabs/openshift-tasks-private.git'
+    git credentialsId: 'cicd-tools-gitea-secret', url: 'http://gitea.cicd-tools.svc.cluster.local:3000/CICDLabs/openshift-tasks-private.git'
   }
 
   // The following variables need to be defined at the top level
@@ -44,13 +44,13 @@ node('maven-appdev') {
   // Using Maven call SonarQube for Code Analysis
   stage('Code Analysis') {
     echo "Running Code Analysis"
-    // sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-shared-cicd.apps.afca.example.opentlc.com/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
+    // sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-cicd-tools.apps.afca.example.opentlc.com/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
   }
 
   // Publish the built war file to Nexus
   stage('Publish to Nexus') {
     echo "Publish to Nexus"
-    sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3.shared-cicd.svc.cluster.local:8081/repository/releases"
+    sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3.cicd-tools.svc.cluster.local:8081/repository/releases"
   }
 
   // Build the OpenShift Image in OpenShift and tag it.
@@ -58,7 +58,7 @@ node('maven-appdev') {
     echo "Building OpenShift container image tasks:${devTag}"
     
     // Start Binary Build in OpenShift using the file we just published into Nexus
-    sh "oc start-build tasks --follow --from-file=http://nexus3.shared-cicd.svc.cluster.local:8081/repository/releases/org/jboss/quickstarts/eap/tasks/${version}/tasks-${version}.war -n tasks-dev"
+    sh "oc start-build tasks --follow --from-file=http://nexus3.cicd-tools.svc.cluster.local:8081/repository/releases/org/jboss/quickstarts/eap/tasks/${version}/tasks-${version}.war -n tasks-dev"
     
     // Or use the filename is openshift-tasks.war in the 'target' directory of your current
     // Jenkins workspace
@@ -109,7 +109,7 @@ node('maven-appdev') {
   stage('Copy Image to Nexus Docker Registry') {
     echo "Copy image to Nexus Docker Registry"
 
-    sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) --dest-creds admin:admin123 docker://docker-registry.default.svc.cluster.local:5000/tasks-dev/tasks:${devTag} docker://nexus-registry.shared-cicd.svc.cluster.local:5000/tasks:${devTag}"
+    sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) --dest-creds admin:admin123 docker://docker-registry.default.svc.cluster.local:5000/tasks-dev/tasks:${devTag} docker://nexus-registry.cicd-tools.svc.cluster.local:5000/tasks:${devTag}"
 
     // Tag the built image with the production tag.
     openshiftTag alias: 'false', destStream: 'tasks', destTag: prodTag, destinationNamespace: 'tasks-dev', namespace: 'tasks-dev', srcStream: 'tasks', srcTag: devTag, verbose: 'false'
