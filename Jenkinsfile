@@ -44,7 +44,7 @@ node('maven-appdev') {
   // Using Maven call SonarQube for Code Analysis
   stage('Code Analysis') {
     echo "Running Code Analysis"
-    sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.apps.ca1c.example.opentlc.com/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
+    sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.apps.39f3.example.opentlc.com/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
   }
 
   // Publish the built war file to Nexus
